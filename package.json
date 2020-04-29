@@ -16,7 +16,7 @@
     "url": "https://github.com/AlexianeDapsens/pictionary_b3g1/issues"
   },
   "homepage": "https://github.com/AlexianeDapsens/pictionary_b3g1#readme",
-  "devDependencies": {
+  "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   }
