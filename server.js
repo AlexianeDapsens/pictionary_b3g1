@@ -25,12 +25,26 @@ io.on('connection', (socket) => {
 //tableau pour stocker les users
 let users = [];
 
+let currentPlayer = null;
+let timeout;
+
+//créer un tableau avec les mots à dessiner
+let words = ['apple', 'window', 'linux'];
+
 function onConnection(socket){
 	socket.on('username', (username) => {
 		console.log('Client name : ', username);
 		//stocker tous les nom d'utilisateurs dans le socket
 		socket.username = username;
-		users.push(socket);
+
+		if(users.length === 0){
+			currentPlayer = socket;
+			users.push(socket);
+			switchPlayer();
+		}else{
+			users.push(socket);
+		}
+
 		sendUsers();
 	});
 
@@ -50,6 +64,29 @@ function onConnection(socket){
 
 function sendUsers(){
 	io.emit('users', users.map((user) => {
-		return user.username;
+		return {
+			username : user.username,
+			active: user === currentPlayer
+		}
 	}));
+}
+
+function switchPlayer(){
+	//arrêt si plus de joueurs
+	if(users.length === 0) return;
+
+	//EXEMPLE
+	//si user = [a,b,c]
+	//currentPlayer = a => indexCurrentPlayer = 0
+	//currentPlayer = user[1 % 3] => users[2] -> b
+	const indexCurrentPlayer = users.indexOf(currentPlayer);
+	//passer au joueur suivant
+	currentPlayer = users[(indexCurrentPlayer + 1) % users.length];
+
+	sendUsers();
+	timeout = setTimeout(switchPlayer, 20000);
+
+	currentPlayer.emit('word', words[Math.floor(words.length * Math.random())]);
+
+	io.emit('clear');
 }
