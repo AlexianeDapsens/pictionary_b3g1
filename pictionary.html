@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		canvas{
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+		}
+	</style>
+</head>
+<body>
+	<h1>Hello Word !</h1>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+	<script>
+		//créer un lien entre le serveur et le client
+		let socket = io();
+		//demander le nom d'utilisateur
+		const username = prompt('Tell me your name');
+		//envoyer le nom au serveur (id = username puis la constante du dessus)
+		socket.emit('username', username);
+
+		//initialiser p5
+		function setup(){
+			createCanvas(500, 500);
+		}
+		function mouseDragged() {
+			line(mouseX, mouseY, pmouseX, pmouseY);
+			//envoyer le dessin avec tous les utilisateurs grâce à socket
+			socket.emit('line', {
+				mouseX,
+				mouseY,
+				pmouseX,
+				pmouseY
+			});
+		}
+
+		//acouter l'événement line pour le reproduire chez les autres
+		socket.on('line', (data) => {
+			line(data.mouseX, data.mouseY, data.pmouseX, data.pmouseY);
+		})
+	</script>
+
+</body>
+</html>

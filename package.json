@@ -1,0 +1,23 @@
+{
+  "name": "pictionary_b3g1",
+  "version": "0.0.1",
+  "description": "DWM project using websocket",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexianeDapsens/pictionary_b3g1.git"
+  },
+  "author": "Alexiane Dapsens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexianeDapsens/pictionary_b3g1/issues"
+  },
+  "homepage": "https://github.com/AlexianeDapsens/pictionary_b3g1#readme",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
