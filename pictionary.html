@@ -6,10 +6,36 @@
 		canvas{
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 		}
+		form{
+			position: fixed;
+			top: 0;
+			right: 0;
+			border: 1px solid black;
+			padding: 10px;
+		}
+		label{
+			display: block;
+		}
+		.users{
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			padding: 10px;
+			border: 1px solid black;
+		}
 	</style>
 </head>
 <body>
 	<h1>Hello Word !</h1>
+	<form>
+		<label>
+			Line weight: <input class="js-weight" type="range" min="1" max="50" value="4">
+		</label>
+		<label>
+			Color: <input class="js-color" type="color" value="#000000">
+		</label>
+	</form>
+	<ul class="users js-users"></ul>
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
@@ -21,24 +47,46 @@
 		//envoyer le nom au serveur (id = username puis la constante du dessus)
 		socket.emit('username', username);
 
+		//modifier le trait (form)
+		const inputWeight = document.querySelector('.js-weight');
+		const inputColor = document.querySelector('.js-color');
+		const usersList = document.querySelector('.js-users');
+
 		//initialiser p5
 		function setup(){
 			createCanvas(500, 500);
 		}
 		function mouseDragged() {
+			//valeur de l'input range
+			strokeWeight(inputWeight.value);
+			stroke(inputColor.value);
+			//dessiner la ligne
 			line(mouseX, mouseY, pmouseX, pmouseY);
-			//envoyer le dessin avec tous les utilisateurs grâce à socket
+			//envoyer au serveur toutes les infos
 			socket.emit('line', {
 				mouseX,
 				mouseY,
 				pmouseX,
-				pmouseY
+				pmouseY,
+				weight: inputWeight.value,
+				color: inputColor.value
 			});
 		}
 
 		//acouter l'événement line pour le reproduire chez les autres
 		socket.on('line', (data) => {
+			stroke(data.color);
+			strokeWeight(data.weight);
 			line(data.mouseX, data.mouseY, data.pmouseX, data.pmouseY);
+		});
+
+		socket.on('users', (data) => {
+			usersList.innerHTML = '';
+			data.forEach((user) =>{
+				const li = document.createElement('li');
+				li.innerHTML = user;
+				usersList.appendChild(li);
+			})
 		})
 	</script>
 
