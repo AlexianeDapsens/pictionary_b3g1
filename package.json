@@ -17,6 +17,6 @@
   "homepage": "https://github.com/AlexianeDapsens/pictionary_b3g1#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   }
 }
